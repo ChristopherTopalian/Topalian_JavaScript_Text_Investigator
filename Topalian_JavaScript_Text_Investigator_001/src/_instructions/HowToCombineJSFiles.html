@@ -1,0 +1,139 @@
+<!-- Dedicated to God the Father -->
+
+<!-- All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024 -->
+
+<!-- https://github.com/ChristopherTopalian -->
+
+<!-- https://github.com/ChristopherAndrewTopalian -->
+
+<!-- HowToCombineJSFiles.html -->
+
+<html>
+<head>
+<title> How to Combine JS Files </title>
+
+<style>
+
+body
+{
+    padding: 5px;
+    background-color: rgb(40, 40, 40);
+    font-family: Arial;
+    font-size: 24px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+}
+
+pre
+{
+    margin: 0;
+    padding: 5px;
+    font-family: Arial;
+    font-size: 30px;
+    color: rgb(0, 255, 255);
+    white-space: pre-wrap;
+}
+
+b
+{
+    font-size: 25px;
+    color: rgb(0, 255, 255);
+}
+
+blockquote
+{
+    margin: 0px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: rgb(0, 0, 0);
+    font-size: 34px;
+    color: rgb(255, 255, 0);
+    text-align: center;
+}
+
+h5
+{
+    font-family: Arial;
+    font-size: 15px;
+    color: rgb(150, 150, 150);
+    text-align: center;
+}
+
+#mainDiv
+{
+    margin: auto;
+    width: 90%;
+    height: 70%;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id = 'mainDiv'>
+
+TUTORIAL:
+<b>How to Combine all .js files in all folders that are in our js folder. </b>
+
+<hr>
+
+<b>Getting things ready: </b>
+    We should add two new lines at the end every script. This way they will combine nicely with a line break in between each script.
+
+<hr>
+
+<b>Step One: </b>
+    Open our js folder
+
+<hr>
+
+<b>Step Two: </b>
+    Type in the address bar of the js folder, <span style = "color:yellow;">cmd</span>, press Enter
+
+<hr>
+
+This opens our js folder in the command prompt
+
+<hr>
+
+<b>Step Three: </b>
+    Type the command shown below in the command prompt and then press Enter
+
+<hr>
+
+<blockquote>for /r "%CD%" %i in (*.js) do type "%i" >> main.js </blockquote>
+
+<hr>
+
+Now we have a newly created .js file named main.js that has all of our js files included into one file.
+
+<hr>
+
+This makes it easy to upload our application and easy to find out how many lines of code our project is.
+
+<hr>
+
+To use our main.js file, we include it in our html file code:
+
+<!-- <script src = 'js/main.js'></script> -->
+
+<pre>&lt;script src = "js/main.js"&gt;&lt;/script&gt;</pre>
+
+<hr>
+
+Happy Scripting :-)
+
+<hr>
+
+<h5>
+All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+</h5>
+
+</div>
+
+</body>
+
+</html>
+

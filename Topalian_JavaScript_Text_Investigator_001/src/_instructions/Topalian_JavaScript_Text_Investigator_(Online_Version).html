@@ -1,0 +1,1387 @@
+<!-- Dedicated to God the Father -->
+<!-- All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024 -->
+<!-- https://github.com/ChristopherTopalian -->
+<!-- https://github.com/ChristopherAndrewTopalian -->
+<!-- https://github.com/ChristopherTopalian/ -->
+<!-- Topalian_JavaScript_Text_Investigator.html -->
+<!-- Version 001 - (2024-07-12) -->
+
+<html>
+<head>
+<title> Topalian JavaScript Text Investigator </title>
+
+<style>
+
+/* Dedicated to God the Father */
+/* All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024 */
+/* https://github.com/ChristopherTopalian */
+/* https://github.com/ChristopherAndrewTopalian */
+/* style001.css */
+
+body
+{
+    background-color: rgb(30, 30, 30);
+    font-family: Arial;
+    font-size: 20px;
+    color: rgb(255, 255, 255);
+}
+
+textarea
+{
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: solid 1px rgb(0, 0, 0);
+    border-radius: 8px;
+    background-color: rgb(0, 0, 0);
+    font-family: Arial;
+    font-size: 20px;
+    color: rgb(255, 255, 255);
+}
+
+a
+{
+    color: rgb(100, 100, 100);
+    text-decoration: none;
+}
+
+a:hover
+{
+    text-decoration: underline;
+}
+
+#mainContainer
+{
+    width: 95%;
+    margin: auto;
+}
+
+#textInput
+{
+    width: 100%;
+    height: 150px;
+}
+
+#resultContainer
+{
+    margin-top: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: solid 1px rgb(0, 0, 0);
+    border-radius: 8px;
+    background-color: rgb(0, 0, 0);
+    font-family: Arial;
+    font-size: 20px;
+    color: rgb(255, 255, 255);
+}
+
+.buttonStyle001
+{
+    max-height: 40px;
+    margin: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border: solid 1px rgb(100, 100, 100);
+    border-radius: 8px;
+    background-color: rgb(0, 0, 0);
+    font-size: 15px;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.buttonStyle001:hover
+{
+    border-color: rgb(0, 255, 255);
+}
+
+.buttonStyle001:active
+{
+    position: relative;
+    top: 1px;
+    border-color: rgb(255, 0, 255);
+    color: rgb(255, 0, 255);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(100, 100, 100) rgb(0, 0, 0);
+}
+
+</style>
+
+<script>
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// shortcuts.js
+
+function ge(whichId)
+{
+    let result = document.getElementById(whichId);
+    return result;
+}
+
+function ce(whichType)
+{
+    let result = document.createElement(whichType);
+    return result;
+}
+
+function ba(whichElement)
+{
+    let result = document.body.append(whichElement);
+    return result;
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// worldVariables.js
+
+let online = true;
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// makeInterface.js
+
+function makeInterface()
+{
+    // mainContainer
+    let mainContainer = ce('div');
+    mainContainer.id = 'mainContainer';
+    mainContainer.style.position = 'absolute';
+    mainContainer.style.left = '20px';
+    mainContainer.style.top = '25px';
+    ba(mainContainer);
+
+    //-//
+
+    // textInput
+    let textInput = ce('textarea');
+    textInput.id = 'textInput';
+    textInput.placeholder = 'Enter words here...';
+    mainContainer.append(textInput);
+
+    //-//
+
+    // btnDivInternetData
+    let btnDivInternetData = ce('div');
+    btnDivInternetData.style.display = 'flex';
+    btnDivInternetData.style.flexDirection = 'row';
+    btnDivInternetData.style.overflowX = 'auto';
+    btnDivInternetData.style.whiteSpace = 'nowrap';
+
+    // horizontal scrolling mouse wheel, without needing to hold shift button
+    btnDivInternetData.addEventListener('wheel', function(event)
+    {
+        if (event.deltaY !== 0)
+        {
+            btnDivInternetData.scrollLeft += event.deltaY;
+            event.preventDefault();
+        }
+    });
+
+    mainContainer.append(btnDivInternetData);
+
+    //-//
+
+    let internetDataBtnArray = 
+    [
+        {
+            name: 'Earthquake (latest)',
+            functionName: `fetchMostRecentEarthquakeData()`,
+            description: 'Get most recent Earthquake data from the internet'
+        },
+
+        {
+            name: 'Earthquake (All)',
+            functionName: `fetchAllEarthquakeData()`,
+            description: 'Get all Earthquake data from the internet'
+        },
+
+        {
+            name: 'Get Random Joke',
+            functionName: `fetchRandomJoke()`,
+            description: 'Get a random joke from the internet'
+        }
+    ];
+
+    for (let i = 0; i < internetDataBtnArray.length; i++)
+    {
+        let theButton = ce('button');
+        theButton.className = 'buttonStyle001';
+        theButton.innerHTML = internetDataBtnArray[i].name;
+        theButton.title = internetDataBtnArray[i].description;
+        theButton.onmouseover = function()
+        {
+            audioPlay('sfx_warp_001', 1.0);
+        };
+
+        theButton.onclick = function(buttonInfo)
+        {
+            audioPlay('sfx_blip_001', 1.0);
+
+            ge('resultContainer').innerHTML = eval(internetDataBtnArray[i].functionName);
+        }
+
+        btnDivInternetData.append(theButton);
+    }
+
+    //-//
+
+    // btnDivAnalyzeText
+    let btnDivAnalyzeText = ce('div');
+    btnDivAnalyzeText.style.display = 'flex';
+    btnDivAnalyzeText.style.flexDirection = 'row';
+    btnDivAnalyzeText.style.overflowX = 'auto';
+    btnDivAnalyzeText.style.whiteSpace = 'nowrap';
+
+    // horizontal scrolling mouse wheel, without needing to hold shift button
+    btnDivAnalyzeText.addEventListener('wheel', function(event)
+    {
+        if (event.deltaY !== 0)
+        {
+            btnDivAnalyzeText.scrollLeft += event.deltaY;
+            event.preventDefault();
+        }
+    });
+
+    mainContainer.append(btnDivAnalyzeText);
+
+    //-//
+
+    let analyzeButtons = 
+    [
+        {
+            name: 'Word Count',
+            functionName: `getWordCount(textInput.value)`,
+            description: 'Count the number of words'
+        },
+
+        {
+            name: 'Word Frequency',
+            functionName: `getWordFrequency(textInput.value)`,
+            description: 'Count the frequency of each word'
+        },
+
+        {
+            name: 'Pattern Recognition',
+            functionName: `detectPattern(textInput.value)`,
+            description: 'Search for Pattern of word THE'
+        },
+
+        {
+            name: 'Average Word Length',
+            functionName: `calculateAvgWordLength(textInput.value)`,
+            description: 'Average length of words'
+        },
+
+        {
+            name: 'Sentiment Rating',
+            functionName: `detectSentiment(textInput.value)`,
+            description: 'The general intention of the text'
+        },
+
+        {
+            name: 'Extract Keywords',
+            functionName: `extractKeywords(textInput.value)`,
+            description: 'Get Keywords without getting common link words'
+        },
+
+        {
+            name: 'Extract Keywords Uppercase',
+            functionName: `extractKeywordsUppercase(textInput.value)`,
+            description: 'Uppercase extracted keywords'
+        },
+
+        {
+            name: 'Titlecase Keywords',
+            functionName: `titleCaseKeywords(textInput.value)`,
+            description: 'Titlecases the words'
+        },
+
+        {
+            name: 'Categorize Words',
+            functionName: `categorizeWords(textInput.value)`,
+            description: 'Put words into categories'
+        }, 
+
+    ];
+
+    for (let i = 0; i < analyzeButtons.length; i++)
+    {
+        let theButton = ce('button');
+        theButton.className = 'buttonStyle001';
+        theButton.innerHTML = analyzeButtons[i].name;
+        theButton.title = analyzeButtons[i].description;
+        theButton.onmouseover = function()
+        {
+            audioPlay('sfx_warp_001', 1.0);
+        };
+
+        theButton.onclick = function(buttonInfo)
+        {
+            audioPlay('sfx_blip_001', 1.0);
+
+            ge('resultContainer').innerHTML = eval(analyzeButtons[i].functionName);
+        }
+
+        btnDivAnalyzeText.append(theButton);
+    }
+
+    //-//
+
+    // btnDivFormatting
+    let btnDivFormatting = ce('div');
+    btnDivFormatting.style.display = 'flex';
+    btnDivFormatting.style.flexDirection = 'row';
+    btnDivFormatting.style.overflowX = 'auto';
+    btnDivFormatting.style.whiteSpace = 'nowrap';
+
+    // horizontal scrolling mouse wheel, without needing to hold shift button
+    btnDivFormatting.addEventListener('wheel', function(event)
+    {
+        if (event.deltaY !== 0)
+        {
+            btnDivFormatting.scrollLeft += event.deltaY;
+            event.preventDefault();
+        }
+    });
+    mainContainer.append(btnDivFormatting);
+
+    //-//
+
+    let formattingButtons = 
+    [
+        {
+            name: 'Capitalize Text',
+            functionName: `capitalizeText(textInput.value)`,
+            description: 'Capitalizes all words'
+        },
+
+        {
+            name: 'Lowercase Text',
+            functionName: `lowercaseText(textInput.value)`,
+            description: 'Lowercases all words'
+        },
+
+        {
+            name: 'Capitalize 1st Letter',
+            functionName: `capitalizeFirstLetters(textInput.value)`,
+            description: 'Capitalizes the 1st Letter of each word'
+        },
+
+        {
+            name: 'Bold Text',
+            functionName: `boldText(textInput.value)`,
+            description: 'Bold all words'
+        },
+
+        {
+            name: 'Normal Text',
+            functionName: `normalText(textInput.value)`,
+            description: 'Normalize all words'
+        },
+
+        {
+            name: 'Italic Text',
+            functionName: `italicText(textInput.value)`,
+            description: 'Italicize all words'
+        },
+
+        {
+            name: 'Underline Text',
+            functionName: `underlineText(textInput.value)`,
+            description: 'Underline all words'
+        },
+
+        {
+            name: 'Format as Bulleted List',
+            functionName: `formatAsBulletedList(textInput.value)`,
+            description: 'Format words as Bullet List'
+        }
+    ];
+
+    for (let i = 0; i < formattingButtons.length; i++)
+    {
+        let theButton = ce('button');
+        theButton.className = 'buttonStyle001';
+        theButton.innerHTML = formattingButtons[i].name;
+        theButton.title = formattingButtons[i].description;
+        theButton.onmouseover = function()
+        {
+            audioPlay('sfx_warp_001', 1.0);
+        };
+
+        theButton.onclick = function(buttonInfo)
+        {
+            audioPlay('sfx_blip_001', 1.0);
+
+            ge('resultContainer').innerHTML = eval(formattingButtons[i].functionName);
+        }
+
+        btnDivFormatting.append(theButton);
+    }
+
+    //-//
+
+    let resultContainer = ce('div');
+    resultContainer.id = 'resultContainer';
+    resultContainer.style.minHeight = '100px';
+    mainContainer.append(resultContainer);
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// makeTitleOfApp.js
+
+function makeTitleOfApp()
+{
+    // titleContainer
+    let titleContainer = ce('div');
+    titleContainer.style.position = 'absolute';
+    titleContainer.style.right = '20px';
+    titleContainer.style.top = titleContainer.style.top = '2px';
+    titleContainer.style.zIndex = 1;
+    ba(titleContainer);
+
+    //-//
+
+    // titleOfApp
+    let titleOfApp = ce('div');
+    titleOfApp.id = 'titleOfApp';
+    titleOfApp.innerHTML =
+    `<a href = 'https://github.com/christophertopalian/topalian_javascript_text_investigator' target = '_blank'> Topalian JavaScript Text Investigator </a>`;
+    titleOfApp.style.fontSize = '17px';
+    titleOfApp.style.fontWeight = 'bold';
+    titleContainer.append(titleOfApp);
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// calculateAvgWordLength.js
+
+function calculateAvgWordLength(whichText)
+{
+    let words = whichText.split(/\s+/);
+    let totalLength = 0;
+    let wordCount = 0;
+
+    for (let i = 0; i < words.length; i++)
+    {
+        let word = words[i];
+
+        if (word.length > 0)
+        {
+            totalLength += word.length;
+            wordCount++;
+        }
+    }
+
+    if (wordCount > 0)
+    {
+        return (totalLength / wordCount).toFixed(2);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+//categorizeWords.js
+
+function categorizeWords(whichText)
+{
+    // define word categories
+    let categories =
+    {
+        specifier: ["the", "a", "an", "those", "that", "them", "they", "this"],
+        connector: ["and", "but", "or", "however", "therefore"],
+        thing: ["chair", "table", "car"],
+        time: ["early", "late", "morning", "evening", "yesterday", "today", "tomorrow", "now", "then", "when"]
+    };
+
+    // convert whichText to lowercase and split it into words
+    let words = whichText.toLowerCase().split(' ');
+
+    // array to hold categorized words
+    let categorizedWords = [];
+
+    // loop through words in whichText
+    for (let i = 0; i < words.length; i++)
+    {
+        let word = words[i];
+        let categoryFound = false;
+
+        // check each category
+        let categoryKeys = Object.keys(categories);
+
+        for (let k = 0; k < categoryKeys.length; k++)
+        {
+            let category = categoryKeys[k];
+
+            let categoryWords = categories[category];
+
+            for (let j = 0; j < categoryWords.length; j++)
+            {
+                if (word === categoryWords[j])
+                {
+                    categorizedWords.push(word + " = " + category);
+
+                    categoryFound = true;
+                    break;
+                }
+            }
+
+            if (categoryFound)
+            {
+                break;
+            }
+        }
+
+        // if no category found, label as n/a
+        if (!categoryFound)
+        {
+            categorizedWords.push(word + " = n/a");
+        }
+    }
+
+    return categorizedWords.join("<br> ");
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// detectPattern.js
+
+function detectPattern(whichText)
+{
+    let pattern = /the/gi;
+
+    let matches = whichText.match(pattern);
+
+    let matchCount;
+
+    if (matches)
+    {
+        matchCount = matches.length;
+    }
+    else
+    {
+        matchCount = 0;
+    }
+
+    return matchCount;
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// detectSentiment.js
+
+function detectSentiment(whichText)
+{
+    // positive words
+    let positiveWords = ["happy", "joy", "love", "excellent", "good", "great", "fantastic", "positive", "nice", "wonderful"];
+
+    // negative words
+    let negativeWords = ["sad", "anger", "hate", "terrible", "bad", "horrible", "negative", "mean", "evil"];
+
+    // initialize sentiment scores
+    let positiveScore = 0;
+    let negativeScore = 0;
+
+    // convert whichText to lowercase and split it into words
+    let words = whichText.toLowerCase().split(/\W+/);
+
+    // loop through words in whichText
+    for (let i = 0; i < words.length; i++)
+    {
+        let word = words[i];
+
+        // is word in list of pos words
+        for (let j = 0; j < positiveWords.length; j++)
+        {
+            if (word === positiveWords[j])
+            {
+                positiveScore++;
+                // exit inner loop if match found
+                break;
+            }
+        }
+
+        // is word in list of neg words
+        for (let k = 0; k < negativeWords.length; k++)
+        {
+            if (word === negativeWords[k])
+            {
+                negativeScore++;
+                // exit inner loop if match found
+                break;
+            }
+        }
+    }
+
+    let sentiment;
+
+    // determine sentiment
+    if (positiveScore > negativeScore)
+    {
+        sentiment = "Positive";
+    }
+    else if (negativeScore > positiveScore)
+    {
+        sentiment = "Negative";
+    }
+    else
+    {
+        sentiment = "Neutral";
+    }
+
+    return sentiment;
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// extractKeywords.js
+
+function extractKeywords(whichText)
+{
+    // array of common stop words to ignore
+    let stopWords = ["a", "an", "and", "the", "in", "on", "at", "of", "to", "is", "it", "that", "this", "with", "for", "as", "by", "but", "or", "nor", "up", "down", "out", "over", "under", "again", "further", "then", "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "too", "very", "can", "will", "just", "should", "now"];
+
+    // convert whichText to lowercase and split it into words
+    let words = whichText.toLowerCase().split(' ');
+
+    // object to store word frequencies
+    let wordFrequencies = {};
+
+    // loop through words in whichText
+    for (let i = 0; i < words.length; i++)
+    {
+        let word = words[i];
+
+        let isStopWord = false;
+
+        // is word not a stop word
+        for (let j = 0; j < stopWords.length; j++)
+        {
+            if (word === stopWords[j])
+            {
+                isStopWord = true;
+                break;
+            }
+        }
+
+        if (!isStopWord && word.length > 1)
+        {
+            // if word is not a stop word, count its frequency
+            if (wordFrequencies[word])
+            {
+                wordFrequencies[word]++;
+            }
+            else
+            {
+                wordFrequencies[word] = 1;
+            }
+        }
+    }
+
+    // convert word frequencies object into an array of [word, frequency] pairs
+    let frequencyArray = [];
+
+    for (let word in wordFrequencies)
+    {
+        frequencyArray.push([word, wordFrequencies[word]]);
+    }
+
+    // sort array by frequency in descending order
+    frequencyArray.sort(function(a, b)
+    {
+        return b[1] - a[1];
+    });
+
+    // get top 10 keywords
+    let topKeywords = frequencyArray.slice(0, 10).map(function(pair)
+    {
+        return pair[0];
+    });
+
+    // return top keywords as comma separated string
+    return topKeywords.join(', ');
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// extractKeywordsUppercase.js
+
+function extractKeywordsUppercase(whichText)
+{
+    // array of common stop words to ignore
+    let stopWords = ["a", "an", "and", "the", "in", "on", "at", "of", "to", "is", "it", "that", "this", "with", "for", "as", "by", "but", "or", "nor", "up", "down", "out", "over", "under", "again", "further", "then", "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "too", "very", "can", "will", "just", "should", "now"];
+
+    // convert whichText to lowercase and split it into words
+    let words = whichText.toLowerCase().split(' ');
+
+    // object to store word frequencies
+    let wordFrequencies = {};
+
+    // loop through words in whichText
+    for (let i = 0; i < words.length; i++)
+    {
+        let word = words[i];
+
+        // is word not a stop word
+        let isStopWord = false;
+
+        for (let j = 0; j < stopWords.length; j++)
+        {
+            if (word === stopWords[j])
+            {
+                isStopWord = true;
+                break;
+            }
+        }
+
+        if (!isStopWord && word.length > 1)
+        {
+            // if word is not a stop word, count its frequency
+            if (wordFrequencies[word])
+            {
+                wordFrequencies[word]++;
+            }
+            else
+            {
+                wordFrequencies[word] = 1;
+            }
+        }
+    }
+
+    // convert word frequencies object into an array of [word, frequency] pairs
+    let frequencyArray = [];
+
+    for (let word in wordFrequencies)
+    {
+        frequencyArray.push([word, wordFrequencies[word]]);
+    }
+
+    // sort array by frequency in descending order
+    for (let i = 0; i < frequencyArray.length - 1; i++)
+    {
+        for (let j = i + 1; j < frequencyArray.length; j++)
+        {
+            if (frequencyArray[i][1] < frequencyArray[j][1])
+            {
+                let temp = frequencyArray[i];
+                frequencyArray[i] = frequencyArray[j];
+                frequencyArray[j] = temp;
+            }
+        }
+    }
+
+    // get top 10 keywords
+    let topKeywords = [];
+    for (let i = 0; i < 10 && i < frequencyArray.length; i++)
+    {
+        topKeywords.push(frequencyArray[i][0]);
+    }
+
+    // capitalize first letter of each keyword
+    for (let i = 0; i < topKeywords.length; i++)
+    {
+        topKeywords[i] = topKeywords[i].charAt(0).toUpperCase() + topKeywords[i].slice(1);
+    }
+
+    // return top keywords as comma separated string
+    return topKeywords.join(', ');
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// getWordCount.js
+
+function getWordCount(whichText)
+{
+    let words = whichText.split(/\s+/);
+
+    let wordCount = 0;
+
+    for (let i = 0; i < words.length; i++)
+    {
+        if (words[i].length > 0)
+        {
+            wordCount++;
+        }
+    }
+
+    return wordCount;
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// getWordFrequency.js
+
+function getWordFrequency(whichText)
+{
+    let words = whichText.toLowerCase().split(/\s+/);
+
+    let frequency = {};
+
+    for (let i = 0; i < words.length; i++)
+    {
+        let word = words[i];
+
+        if (word.length > 0)
+        {
+            if (frequency[word])
+            {
+                frequency[word]++;
+            }
+            else
+            {
+                frequency[word] = 1;
+            }
+        }
+    }
+
+    let frequencyList = '';
+
+    for (let word in frequency)
+    {
+        if (frequency.hasOwnProperty(word))
+        {
+            frequencyList += word + ': ' + frequency[word] + '<br>';
+        }
+    }
+
+    return frequencyList;
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// titleCaseKeywords.js
+
+function titleCaseKeywords(whichText)
+{
+    // array of common stop words to ignore
+    let stopWords = ["a", "an", "and", "the", "in", "on", "at", "of", "to", "is", "it", "that", "this", "with", "for", "as", "by", "but", "or", "nor"];
+
+    // convert whichText to lowercase and split it into words
+    let words = whichText.toLowerCase().split(' ');
+
+    // object to store word frequencies
+    let wordFrequencies = {};
+
+    // loop through words in whichText
+    for (let i = 0; i < words.length; i++)
+    {
+        let word = words[i];
+
+        let isStopWord = false;
+
+        // is word not a stop word
+        for (let j = 0; j < stopWords.length; j++)
+        {
+            if (word === stopWords[j])
+            {
+                isStopWord = true;
+                break;
+            }
+        }
+
+        if (!isStopWord && word.length > 1)
+        {
+            // if word is not a stop word, count its frequency
+            if (wordFrequencies[word])
+            {
+                wordFrequencies[word]++;
+            }
+            else
+            {
+                wordFrequencies[word] = 1;
+            }
+        }
+    }
+
+    // convert word frequencies object into an array of [word, frequency] pairs
+    let frequencyArray = [];
+
+    let keys = Object.keys(wordFrequencies);
+
+    for (let i = 0; i < keys.length; i++)
+    {
+        let word = keys[i];
+        frequencyArray.push([word, wordFrequencies[word]]);
+    }
+
+    // sort array by frequency in descending order
+    for (let i = 0; i < frequencyArray.length - 1; i++)
+    {
+        for (let j = i + 1; j < frequencyArray.length; j++)
+        {
+            if (frequencyArray[i][1] < frequencyArray[j][1])
+            {
+                let temp = frequencyArray[i];
+                frequencyArray[i] = frequencyArray[j];
+                frequencyArray[j] = temp;
+            }
+        }
+    }
+
+    // get top 10 keywords
+    let topKeywords = [];
+
+    for (let i = 0; i < 10 && i < frequencyArray.length; i++)
+    {
+        topKeywords.push(frequencyArray[i][0]);
+    }
+
+    // loop through words in whichText and capitalize only the keywords
+    let resultWords = [];
+
+    for (let i = 0; i < words.length; i++)
+    {
+        let word = words[i];
+        let isKeyword = false;
+
+        if (i === 0)
+        {
+            // always capitalize first word
+            resultWords.push(word.charAt(0).toUpperCase() + word.slice(1));
+            continue;
+        }
+
+        for (let j = 0; j < topKeywords.length; j++)
+        {
+            if (word === topKeywords[j])
+            {
+                isKeyword = true;
+                break;
+            }
+        }
+
+        if (isKeyword)
+        {
+            resultWords.push(word.charAt(0).toUpperCase() + word.slice(1));
+        }
+        else
+        {
+            resultWords.push(word);
+        }
+    }
+
+    return resultWords.join(' ');
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// boldText.js
+
+function boldText(whichText)
+{
+    let bold = "<b>" + whichText + "</b>";
+
+    return bold;
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// capitalizeFirstLetters.js
+
+function capitalizeFirstLetters(whichText)
+{
+    // split whichText into words
+    let words = whichText.split(" ");
+
+    // array to hold capitalized words
+    let capitalizedWords = [];
+
+    // loop through each word
+    for (let i = 0; i < words.length; i++)
+    {
+        let word = words[i];
+
+        // if word is not empty, capitalize first letter and add to array
+        if (word.length > 0)
+        {
+            let capitalizedWord = word[0].toUpperCase() + word.slice(1);
+
+            capitalizedWords.push(capitalizedWord);
+        }
+        else
+        {
+            capitalizedWords.push(word);
+        }
+    }
+
+    // join capitalized words into a single string
+    return capitalizedWords.join(" ");
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// capitalizeText.js
+
+function capitalizeText(whichText)
+{
+    let upperCase = whichText.toUpperCase();
+
+    return upperCase;
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// formatAsBulletedList.js
+
+function formatAsBulletedList(whichText)
+{
+    let words = whichText.split(' ');
+
+    // array to hold formatted list
+    let formattedList = [];
+
+    // loop through words in whichText
+    for (let i = 0; i < words.length; i++)
+    {
+        // trim leading/trailing whitespace
+        let word = words[i].trim();
+
+        // add each non empty word as a new bullet point
+        if (word.length > 0)
+        {
+            formattedList.push("* " + word.charAt(0).toUpperCase() + word.slice(1) + '<br>');
+        }
+    }
+
+    // return formatted list as a string with line breaks
+    return formattedList.join("\n");
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// italicText.js
+
+function italicText(whichText)
+{
+    let bold = "<i>" + whichText + "</i>";
+
+    return bold;
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// lowercaseText.js
+
+function lowercaseText(whichText)
+{
+    let lowerCase = whichText.toLowerCase();
+
+    return lowerCase;
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// normalText.js
+
+function normalText(whichText)
+{
+    // replace <b> and </b> tags with empty strings
+    whichText = whichText.replace(/<\/?b>/gi, "");
+
+    // replace <strong> and </strong> tags with empty strings
+    whichText = whichText.replace(/<\/?strong>/gi, "");
+
+    return whichText;
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// underlineText.js
+
+function underlineText(whichText)
+{
+    let underline = "<u>" + whichText + "</u>";
+
+    return underline;
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// fetchAllEarthquakeData.js
+
+function fetchAllEarthquakeData()
+{
+    return fetch('https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmagnitude=4.5')
+
+    .then(function(response)
+    {
+        if (!response.ok)
+        {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+
+    .then(function(data)
+    {
+        if (data.features.length > 0)
+        {
+            let earthquakeList = [];
+
+            // iterate through all earthquakes and collect information
+            for (let i = 0; i < data.features.length; i++)
+            {
+                let earthquake = data.features[i];
+
+                // format date
+                let date = new Date(earthquake.properties.time);
+
+                let formattedDate = `${date.toDateString()} ${date.toLocaleTimeString()}`;
+
+                // make earthquake info string
+                let earthquakeInfo = `Date: ${formattedDate}, Magnitude: ${earthquake.properties.mag}, Location: ${earthquake.properties.place}`;
+                earthquakeList.push(earthquakeInfo);
+            }
+
+            // join earthquake info into a single string with newlines
+            let allEarthquakesInfo = earthquakeList.join("\n");
+
+            ge("textInput").value = allEarthquakesInfo;
+
+            // return concatenated earthquake info
+            return allEarthquakesInfo;
+        }
+        else
+        {
+            throw new Error('No earthquake data found');
+        }
+    })
+
+    .catch(function(error)
+    {
+        console.error('Error fetching earthquake data:', error);
+
+        // return error message or throw error
+        throw error;
+    });
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// fetchMostRecentEarthquakeData.js
+
+function fetchMostRecentEarthquakeData()
+{
+    fetch('https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmagnitude=4.5')
+
+    .then(function(response)
+    {
+        if (!response.ok)
+        {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+
+    .then(function(data)
+    {
+        if (data.features.length > 0)
+        {
+            // get most recent earthquake
+            let earthquake = data.features[0];
+
+            // format date
+            let date = new Date(earthquake.properties.time);
+
+            let formattedDate = `${date.toDateString()} ${date.toLocaleTimeString()}`;
+
+            // make earthquake info string
+            let earthquakeInfo = `Date: ${formattedDate}, Magnitude: ${earthquake.properties.mag}, Location: ${earthquake.properties.place}`;
+
+            // set value of textInput element with earthquake info
+            ge("textInput").value = earthquakeInfo;
+
+            return earthquakeInfo;
+        }
+        else
+        {
+            throw new Error('No earthquake data found');
+        }
+    })
+
+    .catch(function(error)
+    {
+        console.error('Error fetching earthquake data:', error);
+    });
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// fetchRandomJoke.js
+
+function fetchRandomJoke()
+{
+    fetch('https://official-joke-api.appspot.com/random_joke')
+
+    .then(function(response)
+    {
+        return response.json();
+    })
+
+    .then(function(data)
+    {
+        let joke = data.setup + " " + data.punchline;
+
+        ge("textInput").value = joke;
+    })
+
+    .catch(function(error)
+    {
+        console.error('Error fetching joke:', error);
+    });
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// audioPlay.js
+
+function audioPlay(whichId, whichVolume)
+{
+    let audio = ge(whichId);
+
+    if (audio)
+    {
+        audio.volume = whichVolume;
+        audio.play();
+    }
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// loadSounds.js
+
+function loadSounds(whichArray)
+{
+    for (let x = 0; x < whichArray.length; x++)
+    {
+        let theSound = ce('audio');
+
+        if (online == false)
+        {
+            theSound.src = whichArray[x].soundFileOffline;
+        }
+        else
+        {
+            theSound.src = whichArray[x].soundFileOnline;
+        }
+
+        theSound.id = whichArray[x].name;
+        theSound.loop = false;
+        theSound.volume = 1.0;
+        ba(theSound);
+    }
+}
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// sounds.js
+
+let sounds =
+[
+    {
+        name: 'sfx_blip_001',
+        soundFileOffline: 'src/media/sounds/sfx_blip_001.mp4',
+        soundFileOnline: 'https://collegeofscripting.weebly.com/uploads/6/4/4/8/64482293/sfx_blip_001.mp4'
+    },
+
+    {
+        name: 'sfx_warp_001',
+        soundFileOffline: 'src/media/sounds/sfx_warp_001.mp3',
+        soundFileOnline: 'https://collegeofscripting.weebly.com/uploads/6/4/4/8/64482293/sfx_warp_001.mp3'
+    }
+];
+
+// Dedicated to God the Father
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+// https://github.com/ChristopherTopalian
+// https://github.com/ChristopherAndrewTopalian
+// whenLoaded.js
+
+function whenLoaded()
+{
+    loadSounds(sounds);
+
+    makeInterface();
+
+    makeTitleOfApp();
+}
+
+</script>
+
+</head>
+
+<body onload = 'whenLoaded();'>
+
+</body>
+
+</html>
+
